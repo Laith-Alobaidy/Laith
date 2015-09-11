@@ -1,0 +1,26 @@
+Varnish 4 log
+==========
+
+
+In Varnish default:
+
+
+
+In your vcl_recv{}.
+
+
+if (req.restarts == 0) {
+    if (req.http.X-Forwarded-For) {
+        set req.http.X-Forwarded-For = req.http.X-Forwarded-For + ", " + client.ip;
+    } else {
+        set req.http.X-Forwarded-For = client.ip;
+    }
+}
+
+Apache config
+=============
+RemoteIPHeader X-Forwarded-For
+RemoteIPInternalProxy 127.0.0.1/8
+LogFormat "%a %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"” combined
+
+Reference: http://serverfault.com/questions/616422/apache-mod-remoteip-and-access-logs
